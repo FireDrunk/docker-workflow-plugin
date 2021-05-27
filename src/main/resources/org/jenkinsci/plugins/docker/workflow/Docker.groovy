@@ -54,7 +54,10 @@ class Docker implements Serializable {
 
     public <V> V withTool(String toolName, Closure<V> body) {
         node {
-            script.withEnv(["PATH=${script.tool name: toolName, type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'}/bin:${script.env.PATH}", "DOCKER_TOOL_NAME=${toolName}"]) {
+            def dockerHome = script.tool name: toolName, type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+
+            // We add both ${dockerHome} and ${dockerHome}/bin here, because Docker changed their tgz release format.
+            script.withEnv(["PATH=${dockerHome}:${dockerHome}/bin:${script.env.PATH}", "DOCKER_TOOL_NAME=${toolName}"]) {
                 body()
             }
         }
